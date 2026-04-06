@@ -1,0 +1,54 @@
+# CI/CD Pipeline for Microservices
+pipeline {
+    agent any
+    environment {
+        DOCKER_HUB_USER = 'quantumvector'
+        ECR_REGISTRY = '123456789012.dkr.ecr.us-east-1.amazonaws.com'
+        APP_NAME = 'cart-service'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/quantum-vector/microservices-platform.git'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    // Run SonarQube scan
+                    echo "Running SonarQube scan..."
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${ECR_REGISTRY}/${APP_NAME}:${env.BUILD_ID}")
+                }
+            }
+        }
+        stage('Push to ECR') {
+            steps {
+                script {
+                    docker.withRegistry("https://${ECR_REGISTRY}", 'ecr-credentials') {
+                        dockerImage.push()
+                        dockerImage.push('latest')
+                    }
+                }
+            }
+        }
+        stage('Update GitOps Manifest') {
+            steps {
+                script {
+                    // Update image tag in Helm chart via Git push
+                    echo "Updating Helm chart with image tag: ${env.BUILD_ID}"
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}

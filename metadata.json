@@ -1,0 +1,5 @@
+{
+  "name": "Quantum Vector: Production-Grade Microservices Platform",
+  "description": "A FAANG-level e-commerce platform architecture featuring 13 microservices, GitOps (ArgoCD), CI/CD (Jenkins), and AI-powered shopping assistance.",
+  "requestFramePermissions": []
+}

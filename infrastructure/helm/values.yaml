@@ -1,0 +1,25 @@
+# Global values for the platform
+global:
+  domain: quantum-vector.dev
+  environment: production
+
+frontend:
+  replicaCount: 3
+  image:
+    repository: quantumvector/frontend
+    tag: latest
+  service:
+    type: LoadBalancer
+    port: 80
+
+auth:
+  replicaCount: 2
+  image:
+    repository: quantumvector/auth
+    tag: latest
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# ... other service values ...
